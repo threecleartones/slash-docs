@@ -1,0 +1,794 @@
+-ng="en-us">
+	<head>
+		<meta charset="utf-8">
+		<title>Frontend brown bag - Flexbox</title>
+		<style>
+			body {
+				max-width: 800px;
+				margin: 0 auto 10em;
+				padding: 1em 2em;
+				background-color: #ddd;
+
+				color: #333;
+				font: 400 1.5em/1.4 sans-serif;
+			}
+
+			h1:focus, h2:focus, h3:focus, h4:focus, h5:focus, h6:focus {
+				outline: 4px solid #aaa;
+			}
+
+			section,
+			#flexbox-intro {
+				padding-top: 1em;
+			}
+
+			li {
+				margin-bottom: 1em;
+			}
+
+			a,
+			a:link,
+			a:visited {
+				text-decoration: none;
+			}
+
+				a:focus,
+				a:hover,
+				a:active {
+					text-decoration: underline;
+				}
+
+			code {
+				white-space: nowrap;
+
+				font-family: "Courier New", monospace, serif;
+				font-size: 1.1em;
+			}
+
+			pre {
+				/*overflow-x: auto;*/
+				position: relative;
+				padding: 1.6em 1em 0;
+				background-color: #ccc;
+			}
+
+				pre code {
+					white-space: pre-wrap;
+
+					font-family: consolas, "Courier New", monospace, serif;
+					font-size: 1em;
+				}
+
+				pre:before {
+					content: attr(title);
+					position: absolute;
+					top: 0;
+					left: 0;
+					padding: 6px;
+					background-color: #333;
+
+					color: #ddd;
+					font-family: sans-serif;
+					font-size: .6em;
+					font-weight: 700;
+					text-transform: uppercase;
+					letter-spacing: 1px;
+				}
+
+			nav {
+				position: fixed;
+				top: 1em;
+				right: 1em;
+				max-width: 16%;
+				padding: 1em;
+				border-radius: 2px;
+				background-color: #ededed;
+				opacity: .3;
+				transition: opacity .3s;
+
+				font-size: .8em;
+			}
+
+				nav:focus,
+				nav:hover,
+				nav:active {
+					opacity: 1;
+				}
+
+				nav h2 {
+					font-size: 1.2em;
+				}
+
+				nav ol {
+					padding-left: 1em;
+				}
+
+				nav li {
+					padding-top: .2em;
+					padding-bottom: .2em;
+				}
+
+				nav a {
+					color: inherit;
+				}
+
+			dl {
+				margin: 0;
+				padding: 0;
+
+				font-family: consolas, "Courier New", monospace, serif;
+			}
+
+				dl dt {
+					float: left;
+					clear: left;
+					width: 14em;
+					margin: 0;
+					padding: 0;
+				}
+
+				dl dt:after {
+					content: ":";
+				}
+
+				dl dd {
+					margin: 0;
+					padding: 0;
+				}
+
+			.browser-view {
+				margin: 1em 0;
+				padding: 2em;
+				border: 2px solid #555;
+				background-color: #fff;
+
+				font-family: "Times New Roman", Times, serif;
+				font-size: 1.2em;
+			}
+
+			.no-break {
+				white-space: nowrap;
+			}
+
+			/* presentation mode
+			....................................................................... */
+			body.present {
+				max-width: none;
+				margin: 0;
+				background-color: #aaa;
+			}
+
+			.present nav {
+				display: none;
+			}
+
+			.present .slide {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+
+				height: calc(100vh - 60px);
+				margin: 0 0 2em;
+				padding: 0 5em;
+				border-radius: 1em;
+				background-color: #eee;
+				opacity: .4;
+				transition: opacity .3s;
+				outline: none;
+
+				font: 400 2.5em/1.4 sans-serif;
+			}
+
+				.present .slide:focus,
+				.present .slide:hover {
+					opacity: 1;
+				}
+
+			.present p {
+				font-family: georgia, serif;
+			}
+
+			/* examples
+			....................................................................... */
+			.ex1 .container {
+			  border: 10px solid #ccc;
+			}
+
+			.ex1 .container .child {
+			  width: 100px;
+			  height: 100px;
+			}
+
+			  .ex1 .container .one {
+			    background-color: #00f;
+			  }
+
+			  .ex1 .container .two {
+			    background-color: #ff0;
+			  }
+
+			  .ex1 .container .three {
+			    background-color: #f00;
+			  }
+
+				.ex1.ex2 .container .child {
+					display: inline-block;
+				}
+
+				.ex1.ex3 .container {
+					display: flex;
+				}
+
+				.ex1.ex3.ex4 .container {
+					flex-direction: column;
+				}
+
+				.ex1.ex3.ex5 .container {
+					flex-direction: column-reverse;
+				}
+
+				.ex1.ex3.ex6 .container {
+					width: 220px;
+				}
+
+				.ex1.ex3.ex7 .container {
+					justify-content: flex-end;
+				}
+
+				.ex1.ex3.ex8 .container {
+					justify-content: center;
+				}
+
+				.ex1.ex3.ex9 .container {
+					justify-content: space-between;
+				}
+
+				.ex1.ex3.ex10 .container {
+					justify-content: space-around;
+				}
+		</style>
+	</head>
+	<body class="presenta">
+		<nav aria-label="Main Menu">
+			<h2>Navigation</h2>
+			<ol>
+				<li><a href="#flexbox-intro">Intro</a></li>
+				<li>
+					<a href="#html-flow">What's HTML Flow?</a>
+					<ol>
+						<li><a href="#giant-magnet">The giant, invisible magnet</a></li>
+						<li><a href="#inline-level">Inline-level behavior</a></li>
+						<li><a href="#block-level">Block-level behavior</a></li>
+						<li><a href="#html-good">HTML Flow - the good parts</a></li>
+						<li><a href="#html-bad">HTML Flow - the bad parts</a></li>
+					</ol>
+				</li>
+				<li><a href="#flexbox-basics">Flexbox basics</a></li>
+				<li><a href="#flexbox-examples">Flexbox examples</a></li>
+				<li><a href="#flexbox-links">Flexbox links</a></li>
+			</ol>
+		</nav>
+		<div id="flexbox-intro">
+			<h1 tabindex="0">
+				Intro
+			</h1>
+			<p>
+				Before Flexbox, we had HTML Flow. Actually, we still have HTML Flow, so now we have both. In order to understand the ways that Flexbox is different from HTML Flow, it helps to understand HTML Flow.
+			</p>
+		</div>
+
+		<section id="html-flow">
+			<h2 tabindex="0">
+				What's HTML Flow?
+			</h2>
+			<p>
+				In order to understand HTML Flow, you really only need to understand three things. First:
+			</p>
+
+			<section id="giant-magnet">
+				<h3 tabindex="0">
+					The giant invisible magnet
+				</h3>
+				<p>
+					There's a giant invisible magnet at the top left corner of every browser window. Everything on the page will be sucked as far up and to the left of the page as it can get, if something else that came earlier in the document isn't already in the way.
+				</p>
+				<p>
+					You can change the position of the magnet to the top right corner if you want:
+				</p>
+				<pre title="css"><code>
+/* changes the value from the default "ltr" */
+direction: rtl;
+				</code></pre>
+				<p>
+					The next thing to understand is "layout modes". HTML tags are either "inline" or "block" level by default (the <code>&lt;table&gt;</code> tag is its own thing).
+				</p>
+			</section>
+
+			<section id="inline-level">
+				<h3 tabindex="0">
+					Inline-level behavior
+				</h3>
+				<p>
+					To the browser, if something is "inline" it basically means the browser is going treat it as if it's text.
+				</p>
+				<p class="browser-view">
+					Every character in this sentence is arranged on a line to the right of the character before it, and wraps to the next line when there's not enough room.
+				</p>
+				<p class="browser-view" style="line-height: 1.1;">
+					It also renders a little whitespace below each character, to leave room for letters with "descenders" (like <b>g</b> and <b>p</b> and <b>q</b>) and "ascenders" (like <b>d</b> and <b>k</b> and <b>l</b>), so they don't overlap each other.
+				</p>
+				<p>
+					Some HTML tags like <code>span</code>, <code>b</code>, and <code>em</code> are inline by default.
+				</p>
+			</section>
+
+			<section id="block-level">
+				<h3 tabindex="0">
+					Block-level behavior
+				</h3>
+				<p>
+					To the browser, "block-level" basically means treat it like a box. A crazy, magical box.
+				</p>
+				<p>
+					In a nutshell, "box" means that the object has width, height, margin, and padding properties. The crazy magic part is that block-level elements also:
+				</p>
+				<ul>
+					<li>are automatically as wide as their containers</li>
+					<li>hog the entire line they are on</li>
+				</ul>
+				<pre title="html"><code>
+&lt;p&gt;These two paragraphs contain text but don't allow any sibling elements to occupy the same line.&lt;/p&gt;&lt;p&gt;See what I mean? They're jerks.&lt;/p&gt;
+				</code></pre>
+				<div class="browser-view">
+					<p>These two paragraphs contain text but don't allow any sibling elements to occupy the same line.</p><p>See what I mean? They're jerks.</p>
+				</div>
+				<p>
+					There's also <em><strong>inline-block</strong></em>, which causes an object to:
+				</p>
+				<ul>
+					<li>behave like an inline object - inline-block objects line up along the same line and wrap to a new line,</li>
+					<li>like block-level objects, they possess width, height, margin, and padding,</li>
+					<li>but are <strong>not</strong> automatically as wide as their containers and do <strong>not</strong> hog the entire line</li>
+				</ul>
+				<p>
+					Check out this example:
+				</p>
+				<pre title="html"><code>
+&lt;div class="container"&gt;
+  &lt;div class="child one"&gt;&lt;/div&gt;
+  &lt;div class="child two"&gt;&lt;/div&gt;
+  &lt;div class="child three"&gt;&lt;/div&gt;
+&lt;/div&gt;
+				</code></pre>
+				<pre title="css"><code>
+.container {
+  border: 10px solid #ccc;
+}
+
+.container .child {
+  width: 100px;
+  height: 100px;
+}
+
+  .container .one {
+    background-color: #00f;
+  }
+
+  .container .two {
+    background-color: #ff0;
+  }
+
+  .container .three {
+    background-color: #f00;
+  }
+				</code></pre>
+				<p>
+					Divs are block-level, so the above would render like this by default:
+				</p>
+				<div class="browser-view ex1">
+					<div class="container">
+					  <div class="child one"></div>
+					  <div class="child two"></div>
+					  <div class="child three"></div>
+					</div>
+				</div>
+				<p>
+					If I set the <code>.child</code> boxes to <code>display: inline-block;</code>, I get this:
+				</p>
+				<div class="browser-view ex1 ex2">
+					<div class="container">
+					  <div class="child one"></div>
+					  <div class="child two"></div>
+					  <div class="child three"></div>
+					</div>
+				</div>
+				<p>
+					As you can see, the boxes still have width and height, but they are arranged next to each other along the same line.
+				</p>
+				<p>
+					<b><i>Interesting side note:</i></b> you can also see that the <code>display: inline-block;</code> boxes have white-space below them and to the right. The white-space below each box is happening because the browser is treating them like <code>inline</code> objects, so in other words, like text. Letters in text can have <em><strong>ascenders</strong></em> (like <b>d</b> and <b>h</b> and <b>l</b>), and <em><strong>descenders</strong></em> (like <b>g</b> and <b>p</b> and <b>q</b>), and so the browser automatically adds some space below each line so the letters don't overlap with each other.
+				</p>
+				<p>
+					The white-space to the right of each box is there because of the line breaks in between the divs in the markup:
+				</p>
+				<pre title="html"><code>
+&lt;div class="child one"&gt;&lt;/div&gt;
+&lt;div class="child two"&gt;&lt;/div&gt;
+&lt;div class="child three"&gt;&lt;/div&gt;
+				</code></pre>
+				<p>
+					By default (as in, this can be changed), these line breaks are treated by the browser the same way spaces between words are treated in HTML - if you remove the line breaks, the white-space disappears:
+				</p>
+				<pre title="html"><code>
+&lt;div class="child one"&gt;&lt;/div&gt;&lt;div class="child two"&gt;&lt;/div&gt;&lt;div class="child three"&gt;&lt;/div&gt;
+				</code></pre>
+				<div class="browser-view ex1 ex2">
+					<div class="container">
+					  <div class="child one"></div><div class="child two"></div><div class="child three"></div>
+					</div>
+				</div>
+				<p>
+					but if you replace the line-breaks with spaces (just like between words) the white-space comes back:
+				</p>
+				<pre title="html"><code>
+&lt;div class="child one"&gt;&lt;/div&gt; &lt;div class="child two"&gt;&lt;/div&gt; &lt;div class="child three"&gt;&lt;/div&gt;
+				</code></pre>
+				<div class="browser-view ex1 ex2">
+					<div class="container">
+					  <div class="child one"></div> <div class="child two"></div> <div class="child three"></div>
+					</div>
+				</div>
+				<p>
+					But I digest. Moving on
+				</p>
+			</section>
+
+			<section id="html-good">
+				<h3 tabindex="0">
+					So what's good about HTML Flow?
+				</h3>
+				<p>
+					HTML is a fantastic tool for what it was intended to do, which is <em><strong>not</strong></em> making user interfaces for "web applications".
+				</p>
+				<p>
+					HTML was designed to allow scientists to create and share engineering documents easily without having to worry about file formats or proprietary word processing applications. Check out the first ever published HTML document: <a href="http://info.cern.ch/hypertext/WWW/MarkUp/Tags.html">http://info.cern.ch/hypertext/WWW/MarkUp/Tags.html</a>
+				</p>
+			</section>
+
+			<section id="html-bad">
+				<h3 tabindex="0">
+					What sucks about HTML Flow?
+				</h3>
+				<p>
+					In order to compose complex, and sometimes simple, user interfaces with HTML, you have to trick it sometimes. It also doesn't automatically or easily do some of the things we require of UI development.
+				</p>
+				<p>
+					"Float" is an example of an HTML feature we use everyday, but often not as it was intended. It was intended to let HTML documents do that cool thing you see in print magazines where the text "flows" around an image:
+				</p>
+				<pre title="html"><code>
+&lt;p&gt;Hearken if you will to the tale of the fall of a lord of darkness, and the return of a king of light.&lt;/p&gt;
+
+&lt;img src="http://mangibeam.com/stuff/flyyoufools/jpg" style="float: left;"&gt;
+
+&lt;p&gt;Concern yourselves with armies and wizards, phantoms and emperors, cloud-capp'd towers and bloodied fields of horrendous carnage.&lt;/p&gt;
+				</code></pre>
+				<div class="browser-view" style="padding: 0 25%; font-size: 1.4em;">
+					<p style="margin-bottom: 0;">Hearken if you will to the tale of the fall of a lord of darkness, and the return of a king of light.</p>
+					<img src="http://mangibeam.com/stuff/flyyoufools.jpg" height="200" style="float: left; margin: .5em .5em 0 0; border: 6px solid #000;" alt="Meme of a cat clinging to a pillow for dear life with a caption reading 'Fly You Fools!'">
+					<p style="margin-top: 0;">Concern yourselves with armies and wizards, phantoms and emperors, cloud-capp'd towers and bloodied fields of horrendous carnage.</p>
+				</div>
+				<p>
+					Today it's frequently used to create multi-column layouts or horizontal nav menus.
+				</p>
+				<p>
+					The other thing that frequently drives us all crazy is vertical alignment. Depending on the situation there's usually a way to achieve what you want, but it's usually a royal PIA:
+				</p>
+				<pre title="scss"><code>
+$icon-height: 40px;
+$icon-margin-top: $icon-height / 2;
+
+.icon {
+  position: absolute;
+  top: 50%;
+  height: $icon-height;
+  margin-top: $icon-margin-top;
+}
+				</code></pre>
+				<p>
+					In short, a lot of the shortcomings of HTML when it comes to building user interfaces are because it wasn't made for that.
+				</p>
+			</section>
+		</section>
+
+		<section id="flexbox-basics">
+			<h2 tabindex="0">
+				Flexbox basics
+			</h2>
+			<p>
+				Flexbox was designed to overcome some of these limitations. According to the W3C, "flex layout" is a new "layout mode", like block, inline or table layout, designed to solve some of the shortcomings of the other layout modes when it comes to user interfaces.
+			</p>
+			<p>
+				Here's a random list of things to keep in mind as we experiment with flex layout:
+			</p>
+			<ul>
+				<li>A "flexbox" consists of a container, known as the "flex container", and its <em>immediate</em> children, known as "flex items".</li>
+				<li>What a flex container does is manage the arrangement and layout of its <em>immediate</em> children. That's all it does. The fact that it's a flex container has no special effect on its interactions with the objects around it, and the content of the children still obeys HTML flow (unless you set the children to <code>display: flex;</code> of course).</li>
+				<li>There are two <code>display</code> values for a flex container: <code>flex</code> and <code>inline-flex</code>. A container set to <code>flex</code> acts like <code>block</code> object to anything around it, and a container set to <code>inline-flex</code> acts like <code>inline-block</code>.</li>
+				<li>Whenever you see a flex property with the word <code>justify</code> in it, it's something to do with the <em>horizontal</em> arrangement of the flex items (think "width").</li>
+				<li>Whenever you see a flex property with the word <code>align</code> in it, it's something to do with the <em>vertical</em> arrangement of the flex items (think "height").</li>
+			</ul>
+			<p>
+				With all that in mind, let's take the simple object we used earlier:
+			</p>
+			<pre title="html"><code>
+&lt;div class="container"&gt;
+  &lt;div class="child one"&gt;&lt;/div&gt;
+  &lt;div class="child two"&gt;&lt;/div&gt;
+  &lt;div class="child three"&gt;&lt;/div&gt;
+&lt;/div&gt;
+			</code></pre>
+			<pre title="css"><code>
+.container {
+  border: 10px solid #ccc;
+}
+
+.container .child {
+  width: 100px;
+  height: 100px;
+}
+
+  .container .one {
+    background-color: #00f;
+  }
+
+  .container .two {
+    background-color: #ff0;
+  }
+
+  .container .three {
+    background-color: #f00;
+  }
+			</code></pre>
+			<div class="browser-view ex1">
+				<div class="container">
+				  <div class="child one"></div>
+				  <div class="child two"></div>
+				  <div class="child three"></div>
+				</div>
+			</div>
+			<p>
+				By default this follows normal HTML flow - the colored boxes are stacked because they are block-level divs and therefore each occupy their own lines, even though they each a width and a height set, and the parent (the container with the grey border), which has no set width, is as wide as it can get.
+			</p>
+			<p>
+				So let's watch what happens when we turn it into a flexbox by simply changing the value of the <code>display</code> property:
+			</p>
+			<pre title="css"><code>
+.container {
+  display: flex;
+  ...
+}
+			</code></pre>
+			<div class="browser-view ex1 ex3">
+				<div class="container">
+				  <div class="child one"></div>
+				  <div class="child two"></div>
+				  <div class="child three"></div>
+				</div>
+			</div>
+			<p>
+				The first thing to note here is that the parent container (the box with the grey border) didn't change at all - it's still block-level and obeys normal HTML flow. However, the behavior of the children of the container (the colored boxes) changed radically - the flexbox turned them into the flag of <em>Romania</em>. Their arrangement within the flex container is no longer being managed by the rules of HTML flow - they are now flex items, and subject to flex layout.
+			</p>
+			<p>
+				When you add <code>display: flex;</code> to a container, the following properties and default values are instantly applied to it (the container):
+			</p>
+			<dl>
+				<dt>flex-direction</dt>
+				<dd>row</dd>
+				<dt>flex-wrap</dt>
+				<dd>nowrap</dd>
+				<dt>justify-content</dt>
+				<dd>flex-start</dd>
+				<dt>align-items</dt>
+				<dd>stretch</dd>
+				<dt>align-content</dt>
+				<dd>stretch</dd>
+			</dl>
+			<p>
+				and the following property defaults are applied to its immediate children:
+			</p>
+			<dl>
+				<dt>flex-grow</dt>
+				<dd>0</dd>
+				<dt>flex-shrink</dt>
+				<dd>1</dd>
+				<dt>flex-basis</dt>
+				<dd>auto</dd>
+				<dt>align-self</dt>
+				<dd>auto</dd>
+				<dt>order</dt>
+				<dd>0</dd>
+			</dl>
+			<p>
+				We're not going to go into each of these properties in great depth here - that's what the links at the bottom of the page are for - but we'll look at each one briefly, with examples.
+			</p>
+		</section>
+
+		<section id="flexbox-examples">
+			<h2 tabindex="0">
+				Examples
+			</h2>
+			<section>
+				<h3 tabindex="0">
+					Flex container properties
+				</h3>
+				<section>
+					<h4 tabindex="0">
+						<code>flex-direction</code>
+					</h4>
+					<p>
+						This determines whether the flex items (the immediate children of the flex container) will be arranged in a row (the default):
+					</p>
+					<pre title="css"><code>
+.container {
+  display: flex;
+  flex-direction: row;
+  ...
+}
+					</code></pre>
+					<div class="browser-view ex1 ex3">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						or in a column:
+					</p>
+					<pre title="css"><code>
+.container {
+  display: flex;
+  flex-direction: column;
+  ...
+}
+					</code></pre>
+					<div class="browser-view ex1 ex3 ex4">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						You can also reverse the "direction" they are arranged in with <code>row-reverse</code> and <code>column-reverse</code>:
+					</p>
+					<pre title="css"><code>
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+  ...
+}
+					</code></pre>
+					<div class="browser-view ex1 ex3 ex5">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+				</section>
+				<section>
+					<h4 tabindex="0">
+						<code>flex-wrap</code>
+					</h4>
+					<p>
+						This is alot like the CSS <code>white-space</code> property; it determines whether the items will wrap to a new line or not. The default is <code>nowrap</code>, which we can see by setting the width of the flex container to something else than the combined width of the flex item boxes. The boxes each have a set width of <code>100px</code>, which multiplied by <code>3</code> is <code>300px</code>, so let's set our container width to like <code>220px</code>:
+					</p>
+					<div class="browser-view ex1 ex3 ex6">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						This example is great because it really shows what the priorities of flex layout are. Even though the width of each flex item has been explicitly set to <code>100px</code>, the primary goal of the flexbox is to maintain the layout no matter what. In this example, the defaults of <code>flex-direction: row;</code> and <code>flex-wrap: nowrap;</code> are in play. As this example demonstrates, by default flex items are not allowed to "overflow" their flex container, so the flexbox has only one choice - to ignore the widths and shrink (or "flex") the width of the flex items (equally) until they fit inside the container.
+					</p>
+					<p>
+						This behavior is also governed by the flex item <code>flex-shrink</code> property which is coming up later.
+					</p>
+				</section>
+				<section>
+					<h4 tabindex="0">
+						<code>justify-content</code>
+					</h4>
+					<p>
+						Remember when I said to think "horizontally" when you see the word "justify"? This property determines how flex items will be arranged horizontally inside the flex container. The default is <code>flex-start</code>, which explains why the boxes are arrayed at the left end (or the start) of the flex container:
+					</p>
+					<div class="browser-view ex1 ex3">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						If you set it to <code>justify-content: flex-end;</code> instead, then:
+					</p>
+					<div class="browser-view ex1 ex3 ex7">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						Or <code>justify-content: center;</code>:
+					</p>
+					<div class="browser-view ex1 ex3 ex8">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						You also have two neat values that will distribute them more evenly along the main axis (width) of the container. <code>justify-content: space-between</code> will align the left-most flex item up against the left edge of the flex container, the right-most flex item against the right edge of the flex container, and the remaining flex items evenly in between:
+					</p>
+					<div class="browser-view ex1 ex3 ex9">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						Or, you can tell the flexbox to distribute the white-space in the flex-container evenly <em>around</em> the flex-items with <code>justify-content: space-around</code>. Think of it as the browser using the available white-space to apply an equal amount of left/right margin to each flex item:
+					</p>
+					<div class="browser-view ex1 ex3 ex10">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+				</section>
+				<section>
+					<h4 tabindex="0">
+						<code>align-items</code>
+					</h4>
+					<p>
+						Remember when I said to think "vertically" every time you see the word "align"? This property is basically like <code>justify-content</code>, but for vertical arrangement of the flex items (along the "cross axis") instead of horizontal arrangement. The first two values are the same as <code>justify-content</code>
+					</p>
+					<p>
+						The default value is <code>stretch</code>, and we'll walk through it slowly in the context of our container example to see what's happening. With only one property set (<code>display: flex;</code>), our example at its simplest looks like this:
+					</p>
+					<div class="browser-view ex1 ex3">
+						<div class="container">
+						  <div class="child one"></div>
+						  <div class="child two"></div>
+						  <div class="child three"></div>
+						</div>
+					</div>
+					<p>
+						As you can see, the height of the container (without the grey border) matches the height of the flex items (the colored boxes). The container has no height set in the CSS, so it's just following normal HTML flow and setting its height 
+					</p>
+				</section>
+			</section>
+		</section>
+
+		<section id="flexbox-links">
+			<h2 tabindex="0">
+				Links
+			</h2>
+			<ul>
+				<li><a href="https://www.w3.org/TR/css-flexbox-1/">W3C: CSS Flexible Box Layout Module Level 1</a></li>
+				<li><a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/">CSS-Tricks: A Complete Guide to Flexbox</a></li>
+				<li><a href="https://scotch.io/tutorials/a-visual-guide-to-css3-flexbox-properties">Scotch.io: A Visual Guide to CSS3 Flexbox Properties</a></li>
+				<li><a href="https://demos.scotch.io/visual-guide-to-css3-flexbox-flexbox-playground/demos/">Scotch.io: Flexbox Playground</a></li>
+				<li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Using_CSS_flexible_boxes">MDN: Using CSS Flexible Boxes</a></li>
+			</ul>
+		</section>
+	</body>
+</html>
+
