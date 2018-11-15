@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <title>Preso - CSS Grid</title>
+    <style>
+      /* base elements and page layout */
+      html {
+        padding: 1em;
+      }
+
+      body {
+        max-width: 768px;
+        padding: 2em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin: 1em auto;
+        background-color: #efefef;
+
+        color: #222;
+        font-family: sans-serif;
+        font-size: 1em;
+        font-weight: 400;
+        line-height: 1.5;
+      }
+
+      a,
+      a:active,
+      a:visited,
+      a:link {
+        text-decoration: none;
+      }
+
+        a,
+        a:active,
+        a:link {
+          color: #00e;
+        }
+
+          a:visited {
+            color: #551a8b;
+          }
+
+        a:focus,
+        a:hover {
+          text-decoration: underline;
+        }
+
+      h2 {
+        padding-bottom: .3em;
+        border-bottom: 1px solid #ccc;
+        margin-top: 2em;
+      }
+
+      code {
+        padding: .2em .4em;
+        border-radius: 3px;
+        margin: 0;
+        /* background-color: #1b1f230d; */
+        background-color: #ddd;
+        white-space: nowrap;
+
+        font-size: 1.1rem;
+      }
+
+      /* helpers */
+      a.no-visited-history:visited {
+        color: #00e;
+      }
+
+      .code-box {
+        position: relative;
+        display: block;
+        padding: .8em 1em 0;
+        border-radius: 0;
+        background-color: #ddd;
+
+        font-family: consolas;
+      }
+
+        .code-box:before {
+          content: attr(title);
+          position: absolute;
+          top: 0;
+          left: 0;
+          padding: 6px;
+          background-color: #555;
+
+          color: #ddd;
+          font-size: .7em;
+          font-weight: 700;
+          line-height: 1;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .code-box code,
+        .code-box pre {
+          background-color: transparent;
+          white-space: pre;
+
+          font-family: consolas;
+          font-size: 1rem;
+        }
+
+        .code-box .highlighted {
+          color: #00f;
+          font-weight: 700;
+        }
+
+      .code-rendered {
+        padding: 1em;
+        border: 2px solid #ccc;
+      }
+
+        .code-rendered .container .child {
+          padding: .5em;
+
+          color: #eee;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+
+        .code-rendered .container .child.one {
+          background-color: #b00;
+        }
+
+        .code-rendered .container .child.two {
+          background-color: #0b0;
+        }
+
+        .code-rendered .container .child.three {
+          background-color: #00b;
+        }
+
+        .code-rendered.flex .container {
+          display: flex;
+        }
+
+          .code-rendered.flex.jc .container {
+            display: flex;
+            justify-content: space-between;
+          }
+
+          .code-rendered.flex.jc.fd .container {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row-reverse;
+          }
+
+        .code-rendered.grid .container {
+          display: grid;
+        }
+
+          .code-rendered.grid.gtr .container {
+            display: grid;
+            grid-template-rows: 100px 30px auto;
+          }
+
+          .code-rendered.grid.gtc .container {
+            display: grid;
+            grid-template-columns: 100px 30px auto;
+          }
+
+        .code-rendered.grid .page-container {
+          color: #eee;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+
+          .code-rendered.grid .page-container * {
+            padding: .5em;
+          }
+
+          .code-rendered.grid .page-container .header {
+            background-color: #bb0;
+          }
+
+          .code-rendered.grid .page-container .main {
+            background-color: #b00;
+          }
+
+          .code-rendered.grid .page-container .sidebar {
+            background-color: #0b0;
+          }
+
+          .code-rendered.grid .page-container .footer {
+            background-color: #00b;
+          }
+
+        .code-rendered.grid.grid-cols-rows .page-container {
+          display: grid;
+          grid-template-columns: 100px 100px 100px;
+          grid-template-rows: auto;
+        }
+
+        .code-rendered.grid.grid-cols-rows.grid-names {}
+
+          .code-rendered.grid.grid-cols-rows.grid-names .page-container .header {
+            grid-area: header;
+          }
+
+          .code-rendered.grid.grid-cols-rows.grid-names .page-container .main {
+            grid-area: main;
+          }
+
+          .code-rendered.grid.grid-cols-rows.grid-names .page-container .sidebar {
+            grid-area: sidebar;
+          }
+
+          .code-rendered.grid.grid-cols-rows.grid-names .page-container .footer {
+            grid-area: footer;
+          }
+
+        .code-rendered.grid.grid-cols-rows.grid-names.grid-layout .page-container {
+          grid-template-areas:
+            "header header header"
+            "main main sidebar"
+            "footer footer footer";
+        }
+
+        .code-rendered.grid.grid-cols-rows.grid-names.grid-layout.fraction .page-container {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .code-rendered.grid.grid-cols-rows.grid-names.grid-layout.fraction.fixed-sidebar-width .page-container {
+          grid-template-columns: 1fr 1fr 100px;
+        }
+
+        .code-rendered.grid.grid-cols-rows.grid-names.grid-layout.fraction.fixed-sidebar-width.final-example .page-container {
+          grid-template-columns: 1fr 1fr 200px;
+          grid-template-areas:
+            "header header sidebar"
+            "main main sidebar"
+            "footer footer footer";
+        }
+
+      /* doc header */
+      body > header {
+        padding-bottom: 1em;
+        border-bottom: 1px solid #ccc;
+      }
+
+        body > header h1 {
+          margin-bottom: .3em;
+        }
+
+        body > header small {
+          opacity: .6;
+
+          font-style: italic;
+        }
+
+        body > header p {
+          opacity: .8;
+        }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CSS Grid</h1>
+      <small><time>2018-01</time> - <a class="no-visited-history" href="mailto:jeffb@socialcodeinc.com">jeff.b@socialcodeinc.com</a></small>
+      <p>
+        Reading time: ~10 minutes
+      </p>
+    </header>
+
+    <h2>Intro</h2>
+
+    <p>
+      The purpose of this document is <strong>NOT</strong> to provide a comprehensive overview of CSS Grid, there are plenty of those out there already. The problem is that there's a lot to digest. Remember how tricky it was to "get" Flexbox? We finally did (or we like to think we did), but in the beginning we were all like whaaaat. CSS Grid is even worse.
+    </p>
+
+    <p>
+      So the purpose of this document <strong>IS</strong> to get you started on an understanding of the concepts behind CSS Grid that is hopefully presented in so simple and progressive a manner that you don't even need to mess around with any code examples - if you already have a basic understanding of CSS, then you should be able to get over that initial hump (and fear) of CSS Grid by simply reading this document from beginning to end. This is sort of a short primer to get your head ready to handle the bigger more complicated articles about CSS Grid out there. Don't worry, it's written in idiot format, and it's shorter than it looks - a lot of it is pitchers*.
+    </p>
+
+    <p>
+      * caveat - when I said "pitchers" above, I meant "pictures", and there aren't actually any pictures - they're all rendered markup and CSS. So, although this document should work in all the latest alpha browsers. it was written while testing against Chrome, so you should probably view it in Chrome. If you're not in Chrome at the moment, you should switch now - go ahead, I'll wait.
+    </p>
+
+    <h2>Where do we begin?</h2>
+
+    <p>
+      Let's start at the beginning. There are several layout options available in HTML, for example:
+      <ul>
+        <li>Default HTML flow (block, inline, etc)</li>
+        <li>Table layout</li>
+        <li>Flexbox</li>
+      </ul>
+      You specify the layout to be used with the <code>display</code> property, for example <code>display: block;</code>, <code>display: table;</code>, <code>display: flex;</code>, etc.
+    </p>
+
+    <p>
+      CSS3 introduces a new layout called "CSS Grid".
+    </p>
+
+    <p>
+      In the following examples, we'll be using a simple code snippet:
+    </p>
+
+    <pre class="code-box" title="html"><code>
+&lt;div class="container"&gt;
+  &lt;div class="child one"&gt;one&lt;/div&gt;
+  &lt;div class="child two"&gt;two&lt;/div&gt;
+  &lt;div class="child three"&gt;three&lt;/div&gt;
+&lt;/div&gt;
+    </code></pre>
+
+    <p>
+      To make things a little easier to see we'll apply a background color to each child:
+    </p>
+
+    <pre class="code-box" title="sass"><code>
+.container .child {
+  padding: .5em;
+
+  color: #eee;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  &.one {
+    background-color: #b00;
+  }
+
+  &.two {
+    background-color: #0b0;
+  }
+
+  &.three {
+    background-color: #00b;
+  }
+}
+    </code></pre>
+
+    <section>
+      <h2>HTML flow</h2>
+      <p>
+        By default the <code>display</code> value for <code>div</code> is <code>block</code>, so basically if we do nothing, then the above snippet under normal HTML flow looks like this:
+      </p>
+      <div class="code-rendered">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+    </section>
+    <p>
+      Each <code>.child</code>, being a block-level div, takes up its entire line, and in so doing, shoves the next item to the line below.
+    </p>
+
+    <section>
+      <h2>Flexbox</h2>
+      <p>
+        If we define flexbox instead:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  <span class="highlighted">display: flex;</span>
+}
+      </code></pre>
+      <p>
+        then this happens:
+      </p>
+      <div class="code-rendered flex">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+      <p>
+        We've transformed <code>.container</code> into a "flexbox", which means we can do cool things with the immediate children (now known as "flex items") like this:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  display: flex;
+  <span class="highlighted">justify-content: space-between;</span>
+}
+      </code></pre>
+      <div class="code-rendered flex jc">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+      <p>
+        and this:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  display: flex;
+  justify-content: space-between;
+  <span class="highlighted">flex-direction: row-reverse;</span>
+}
+      </code></pre>
+      <div class="code-rendered flex jc fd">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>CSS Grid</h2>
+      <p>
+        If we use grid:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  <span class="highlighted">display: grid;</span>
+}
+      </code></pre>
+      <p>
+        then we get this:
+      </p>
+      <div class="code-rendered grid">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+      <p>
+        which kind of just looks like the first regular HTML flow example above, so what's different?
+      </p>
+      <p>
+        Similar to defining the container as a "flexbox" earlier, this time the container is now a "grid", so it no longer follows the normal rules of HTML flow. Like Flexbox, this allows us to do cool things with the immediate children (now known as "grid items").
+      </p>
+      <p>
+        For example, there are implicit rows and columns in any grid, so we can define rows in our grid and set their heights like this:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  display: grid;
+  <span class="highlighted">grid-template-rows: 100px 30px auto;</span>
+}
+      </code></pre>
+      <p>
+        which looks like this:
+      </p>
+      <div class="code-rendered grid gtr">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+      <p>
+        or we can easily define columns and specify their widths the same way:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.container {
+  display: grid;
+  grid-template-<span class="highlighted">columns</span>: 100px 30px auto;
+}
+      </code></pre>
+      <p>
+        which looks like this:
+      </p>
+      <div class="code-rendered grid gtc">
+        <div class="container">
+          <div class="child one">one</div>
+          <div class="child two">two</div>
+          <div class="child three">three</div>
+        </div>
+      </div>
+      <p>
+        Makes sense so far, right? Don't fret too much for now about how or why the children are arranging themselves within the rows or columns - there's default behavior at work which takes effect if we don't tell the children what to do (which we'll cover further down).
+      </p>
+    </section>
+    <section>
+      <h2>Using CSS Grid for page layout</h2>
+      <p>
+        Is that it? No, of course not, don't be stupid. Just like the other layout options (flow, flexbox), we can use grid to not only layout individual elements within a page, but also the page itself. In this next example we'll do a simple page layout, which is useful to demonstrate some of the other properties available in grid. Just bear in mind that anything here can also be applied to items inside the page too (just like a flexbox can contain nested flexboxes).
+      </p>
+      <p>
+        Say you've got the following typical markup for your page:
+      </p>
+      <pre class="code-box" title="html"><code>
+&lt;article class="page-container"&gt;
+  &lt;header class="header"&gt;header&lt;/header&gt;
+  &lt;main class="main"&gt;main&lt;/main&gt;
+  &lt;aside class="sidebar"&gt;sidebar&lt;/aside&gt;
+  &lt;footer class="footer"&gt;footer&lt;/footer&gt;
+&lt;/article&gt;
+      </code></pre>
+      <p>
+        All these elements are block-level by default, so if we do nothing (and therefore allow normal HTML flow to rule the layout), our "page" looks like this:
+      </p>
+      <div class="code-rendered">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        Let's add some colors to the elements like we did earlier to make things easier to see:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  color: #eee;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  * {
+    padding: .5em;
+  }
+
+  .header {
+    background-color: #bb0;
+  }
+
+  .main {
+    background-color: #b00;
+  }
+
+  .sidebar {
+    background-color: #0b0;
+  }
+
+  .footer {
+    background-color: #00b;
+  }
+}
+      </code></pre>
+      <p>
+        So now it looks like this:
+      </p>
+      <div class="code-rendered grid">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        Now let's define <code>.page-container</code> as a grid:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  <span class="highlighted">display: grid;</span>
+
+  color: #eee;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  ...
+      </code></pre>
+      <p>
+        (which as we already know has no immediate visible effect on the layout).
+      </p>
+      <p>
+        Next, let's define a three column layout, each 100px wide, with an undefined number of rows whose heights are defined by their content:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  <span class="highlighted">grid-template-columns: 100px 100px 100px;</span>
+  <span class="highlighted">grid-template-rows: auto;</span>
+
+  color: #eee;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  ...
+      </code></pre>
+      <div class="code-rendered grid grid-cols-rows">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        Since we've only defined three columns but there are four children, the fourth child breaks to the next line, or "row". You want to see something cool? Inspect the example above and then hover over the grid items in the inspector - Chrome automatically applies a dotted outline to your grid, super duper useful.
+      </p>
+      <p>
+        Now let's give each child ("grid item") a name. Wait what? I know, weird. This is like instantiating variables or instances of stuff in CSS memory or something - we've sort of done this before, for example keyframes in CSS animation, etc. Anyway, we can define each child as an "area" in the grid by giving it a name:
+      </p>
+      <pre class="code-box" title="sass"><code>
+...
+
+.header {
+  <span class="highlighted">grid-area: header;</span>
+
+  background-color: #bb0;
+}
+
+.main {
+  <span class="highlighted">grid-area: main;</span>
+
+  background-color: #b00;
+}
+
+.sidebar {
+  <span class="highlighted">grid-area: sidebar;</span>
+
+  background-color: #0b0;
+}
+
+.footer {
+  <span class="highlighted">grid-area: footer;</span>
+
+  background-color: #00b;
+}
+
+...
+      </code></pre>
+      <p>
+        Note - the names in my example happen to match the class names I gave them but they don't have to, they can be anything.
+      </p>
+      <p>
+        Now for the real magic: using the columns setup and the names we specified earlier, we can define the location and layout of each named grid item within the grid:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: 100px 100px 100px;
+  grid-template-rows: auto;
+  <span class="highlighted">grid-template-areas:</span>
+    <span class="highlighted">"header header header"</span>
+    <span class="highlighted">"main main sidebar"</span>
+    <span class="highlighted">"footer footer footer";</span>
+
+  color: #eee;
+  font-size: 1.2rem;
+  font-weight: 700;
+
+  ...
+      </code></pre>
+      <p>
+        Hopefully this is apparent, but we have an implicit page width of 300px (since we have three columns, each 100px wide), and the "header" item spans all three columns on the first row, "main" the first two columns and "sidebar" the last column of the second row, and finally "footer" occupies all three columns of the third row. We're essentially "drawing" the layout of our grid in the CSS using words!
+      </p>
+      <p>
+        So now our page looks like this:
+      </p>
+      <div class="code-rendered grid grid-cols-rows grid-names grid-layout">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        If we wanted the page width to fit the viewport width, we could use a value we're used to like percentages:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: <span class="highlighted">33% 33% 33%</span>;
+  grid-template-rows: auto;
+
+  ...
+      </code></pre>
+      <p>
+        but there's a new unit we can use with grid that works sort of like the proportion values of flexbox's <code>flex-grow</code> property. The unit is called <code>fr</code>, which is short for "fraction":
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: <span class="highlighted">1fr 1fr 1fr</span>;
+  grid-template-rows: auto;
+
+  ...
+      </code></pre>
+      <p>
+        With this we're basically telling the grid columns to set their widths to one fraction each of the total available width within the container. Since there are three columns, that calculates to 1/3 of the container width per column (or exactly 100% of the page width for the grid object):
+      </p>
+      <div class="code-rendered grid grid-cols-rows grid-names grid-layout fraction">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        Now if, for example, we wanted the sidebar width to be fixed and not change as the viewport width changes, all we'd need to do is set a fixed unit for the third column:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: <span class="highlighted">1fr 1fr 100px</span>;
+  grid-template-rows: auto;
+
+  ...
+      </code></pre>
+      <p>
+        and now our third column, and therefore our sidebar, is 100px wide no matter the width of the container:
+      </p>
+      <div class="code-rendered grid grid-cols-rows grid-names grid-layout fraction fixed-sidebar-width">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+    </section>
+    <section>
+      <h2>One more thing...</h2>
+      <p>
+        So the entire code used to create the page grid layout above (minus my CSS prettification rules) is:
+      </p>
+      <pre class="code-box" title="html"><code>
+&lt;article class="page-container"&gt;
+  &lt;header class="header"&gt;header&lt;/header&gt;
+  &lt;main class="main"&gt;main&lt;/main&gt;
+  &lt;aside class="sidebar"&gt;sidebar&lt;/aside&gt;
+  &lt;footer class="footer"&gt;footer&lt;/footer&gt;
+&lt;/article&gt;
+      </code></pre>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header header header"
+    "main main sidebar"
+    "footer footer footer";
+
+  .header {
+    grid-area: header;
+  }
+
+  .main {
+    grid-area: main;
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+  }
+
+  .footer {
+    grid-area: footer;
+  }
+}
+      </code></pre>
+      <p>
+        There are ways to shorthand this, and there are properties to control things like the size of the whitespace between the columns and rows (gutter, etc), and the alignment of content inside the grid cells (which works a lot like flexbox) (and remember, you can use flexbox concurrently with all this if you want), but there's one last thing to mention before I set you loose on this cray cray spec:
+      </p>
+      <p>
+        Check this out - remember when we specified how each named grid item should be arranged within the grid above? We used this:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 100px;
+  grid-template-rows: auto;
+  <span class="highlighted">grid-template-areas:</span>
+    <span class="highlighted">"header header header"</span>
+    <span class="highlighted">"main main sidebar"</span>
+    <span class="highlighted">"footer footer footer";</span>
+
+  ...
+      </code></pre>
+      <p>
+        to get this:
+      </p>
+      <div class="code-rendered grid grid-cols-rows grid-names grid-layout fraction fixed-sidebar-width">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        Now suppose that design/product suddenly says they now want the sidebar to be 200px wide, and also to extend up into the header area. Normally we'd be fiddling around not only with the CSS but perhaps the markup itself, but these changes are trivial with CSS Grid:
+      </p>
+      <pre class="code-box" title="sass"><code>
+.page-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr <span class="highlighted">200px</span>;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "header header <span class="highlighted">sidebar</span>"
+    "main main sidebar"
+    "footer footer footer";
+
+  ...
+      </code></pre>
+      <p>
+        By changing only two values in our code (and no markup changes), we changed the sidebar width and then told the sidebar object to occupy the third column of both the first AND second rows!
+      </p>
+      <div class="code-rendered grid grid-cols-rows grid-names grid-layout fraction fixed-sidebar-width final-example">
+        <article class="page-container">
+          <header class="header">header</header>
+          <main class="main">main</main>
+          <aside class="sidebar">sidebar</aside>
+          <footer class="footer">footer</footer>
+        </article>
+      </div>
+      <p>
+        This is crazy powerful. As usual you have to know what you're doing (and it depends on what you want to do) in order for it to work the way you want, but the possibilities are mindblowing.
+      </p>
+      <p>
+        So I encourage you to read on! As usual, two good places to start learning/playing with this are:
+        <ul>
+          <li><a href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank">CSS Tricks - A Complete Guide to Grid</a></li>
+          <li><a href="https://codepen.io/pen/" target="_blank">CodePen</a></li>
+        </ul>
+      </p>
+      <p>
+        Have fun!
+      </p>
+    </section>
+  </body>
+</html>
+
