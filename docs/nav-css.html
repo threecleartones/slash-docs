@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en-us">
+  <meta charset="utf-8">
+  <head>
+    <style>
+/* border-box ftw */
+html * {
+  box-sizing: border-box;
+}
+
+/* resets */
+a,
+a:link,
+a:visited {
+  text-decoration: none;
+}
+
+ul,
+li {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+/* stylez */
+body {
+  background-color: #ddd;
+  
+  font-family: sans-serif;
+}
+
+.my-nav {
+  max-width: 800px;
+}
+
+.my-nav .nav-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.my-nav .nav-item {
+  width: 25%;
+  background-color: #9c9;
+}
+
+.my-nav .nav-link {
+  position: relative;
+  display: block;
+  padding: .5em 0;
+  
+  color: #333;
+  font-weight: 700;
+  text-align: center;
+}
+
+  .my-nav .nav-link:focus,
+  .my-nav .nav-link:hover {
+    background-color: #598527;
+  }
+
+.my-nav .nav-container > .nav-item {
+  position: relative;
+}
+
+  .my-nav .nav-container > .nav-item > .nav-link:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 2px;
+    background-color: #555;
+  }
+
+  .my-nav .nav-container > .nav-item:last-child > .nav-link:after {
+    content: normal;
+  }
+
+  .my-nav .nav-container > .nav-item > .nav-link:focus + .nested-container,
+  .my-nav .nav-container > .nav-item > .nav-link:hover + .nested-container {
+    display: block;
+  }
+
+/* dropdowns */
+.my-nav .nested-container {
+  display: none;
+  position: absolute;
+  width: 100%;
+  background-color: #fcc;
+}
+
+  .my-nav .nested-container:focus,
+  .my-nav .nested-container:hover {
+    display: block;
+  }
+
+.my-nav .nested-container .nav-item {
+  width: 100%;
+  background-color: #c4df9b;
+}
+
+/* breakpoints */
+/* alas, NOT mobile first! :-\ */
+@media screen and (max-width: 768px) {
+  
+  /* bump up the size of stuff for tablets and smaller */
+  .my-nav {
+    zoom: 1.1;
+  }
+}
+
+@media screen and (max-width: 200px) {
+  
+  .my-nav {
+    width: 100%;
+  }
+  
+  .my-nav .nav-container {
+    flex-direction: column;
+  }
+
+  .my-nav .nav-item {
+    width: 100%;
+    border-bottom: 2px solid #598527;
+    background-color: #9c9;
+  }
+
+  .my-nav .nav-container > .nav-item > .nav-link:after {
+    content: normal;
+  }
+  
+  .my-nav .nested-container {
+    position: relative;
+  }
+
+  .my-nav .nav-container > .nav-item > .nav-link:focus + .nested-container,
+  .my-nav .nav-container > .nav-item > .nav-link:hover + .nested-container {
+  }
+}
+    </style>
+  </head>
+  <body>
+<nav class="my-nav" role="navigation">
+  <ul class="nav-container">
+    <li class="nav-item">
+      <a href="#" class="nav-link">Hola</a>
+      <ul class="nested-container">
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">Hola</a>
+      <ul class="nested-container">
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">Hola</a>
+      <ul class="nested-container">
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a href="#" class="nav-link">Hola</a>
+      <ul class="nested-container">
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+        <li class="nav-item"><a href="#" class="nav-link">Hola</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</body>
