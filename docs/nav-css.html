@@ -80,19 +80,22 @@ body {
 /* dropdowns */
 .my-nav .nested-container {
   position: absolute;
+  max-height: 0;
   width: 100%;
   background-color: #fcc;
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity .3s ease, height .3s ease;
 }
 
   .my-nav .nav-container > .nav-item > .nav-link:focus + .nested-container,
   .my-nav .nav-container > .nav-item > .nav-link:hover + .nested-container {
+    max-height: 1000px;
     opacity: 1;
   }
 
   .my-nav .nested-container:focus,
   .my-nav .nested-container:hover {
+    max-height: 1000px;
     opacity: 1;
   }
 
