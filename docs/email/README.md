@@ -22,3 +22,6 @@ https://magemail.co/blog/best-font-email/
 
 - Campaign Monitor bulletproof email buttons (doesn't really work for Outlook desktop) 
 https://buttons.cm/
+
+- MailChimp best practices 
+https://templates.mailchimp.com/getting-started/html-email-basics/
